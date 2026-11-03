@@ -1,0 +1,70 @@
+
+ARTERY SEGMENTATION PERFORMANCE REPORT
+======================================
+
+Project:
+Artery Segmentation Using Deep Learning
+
+Dataset:
+ARCADE coronary angiography dataset
+
+Experiment type:
+Preliminary model comparison on a sampled dataset.
+
+Dataset configuration:
+- Number of image-mask pairs: 50
+- Training images: 40
+- Validation images: 10
+- Image size: 512 x 512
+- Batch size: 2
+- Epochs per model: 5
+- Device: cpu
+- Prediction threshold: 0.5
+
+MODEL COMPARISON
+----------------
+
+          Model   Dice    IoU  Precision  Recall  Accuracy  Mean Per-Image Dice  Validation Images    TP     FP    FN      TN
+          U-Net 0.4688 0.3062     0.3417  0.7463    0.9427               0.4638                 10 66303 127728 22537 2404872
+Attention U-Net 0.4365 0.2792     0.3147  0.7120    0.9377               0.4738                 10 63257 137728 25583 2394872
+
+INTERPRETATION
+--------------
+
+Model with the highest pooled Dice: U-Net
+Model with the highest pooled IoU: U-Net
+Model with the highest pooled precision: U-Net
+Model with the highest pooled recall: U-Net
+
+Dice measures overlap between the predicted segmentation and the
+ground-truth mask. IoU measures intersection over union.
+Precision measures the fraction of predicted foreground pixels
+that are correct. Recall measures the fraction of ground-truth
+foreground pixels successfully detected.
+
+Accuracy is included for completeness, but it may be misleading
+because background pixels can dominate segmentation images.
+
+LIMITATIONS
+-----------
+
+1. The experiment uses a small sample of the dataset.
+2. Results may vary with random initialization, training settings,
+   data selection, and preprocessing.
+3. This experiment is not a reproduction of another teammate's
+   trained models unless the same architecture, weights, data split,
+   and evaluation method are used.
+4. The results are not clinically validated and must not be used
+   for clinical diagnosis.
+5. Further work should evaluate larger training and validation sets,
+   tune thresholds using validation data, and evaluate on a separate
+   held-out test set.
+
+CONCLUSION
+----------
+
+U-Net and Attention U-Net were trained and evaluated using the same
+sampled dataset split and evaluation threshold. Their measured
+metrics and prediction visualizations are provided in this report.
+The preferred model should be selected based on the project's
+evaluation criteria and validated on a larger independent dataset.
