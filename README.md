@@ -4,167 +4,147 @@
 
 ArteryVision AI is an AI-based medical image analysis project designed to process **CT Angiography (CTA)** images for artery segmentation and stenosis analysis.
 
-The project uses deep learning techniques to identify artery regions from CTA scans and provides a foundation for detecting and visualizing abnormal narrowing (stenosis).
+The project uses deep learning techniques to identify artery regions from CTA images and provides a foundation for detecting and visualizing abnormal vessel narrowing (stenosis).
 
 ---
 
-## Objectives
+# Objectives
 
-- Segment arteries from 3D CTA images.
-- Detect and analyze possible artery narrowing.
-- Identify the location of stenosis.
-- Estimate the severity of narrowing.
-- Provide visual outputs for easier interpretation.
-- Evaluate the AI model using standard segmentation metrics.
-- Build a foundation for integration with the complete ArteryVision AI application.
+- Segment arteries from CTA images.
+- Detect and localize possible stenosis regions.
+- Estimate the percentage of vessel narrowing.
+- Classify stenosis severity into mild, moderate, and severe categories.
+- Generate visual outputs for artery and stenosis regions.
+- Evaluate the AI model using standard performance metrics.
+- Integrate the AI module with the complete ArteryVision AI application.
 
 ---
 
 # AI/ML Module
 
-The current AI/ML implementation focuses on **3D artery segmentation using the ImageCAS dataset**.
+The AI/ML module uses the **ARCADE dataset** for artery segmentation and stenosis-related analysis.
 
-The segmentation pipeline includes:
+The overall AI workflow includes:
 
 1. Dataset preparation
-2. CT preprocessing
-3. Ground-truth mask processing
-4. 3D patch generation
-5. 3D U-Net model training
-6. Sliding-window inference
-7. Threshold-based evaluation
-8. Segmentation visualization
-
-A stenosis analysis module is being developed on top of the artery segmentation output.
+2. Image preprocessing
+3. Artery mask preparation
+4. Deep learning model training
+5. Artery segmentation
+6. Segmentation evaluation
+7. Stenosis analysis
+8. Stenosis visualization
 
 ---
 
 # Dataset
 
-## ImageCAS Dataset
+## ARCADE Dataset
 
-The project uses the **ImageCAS dataset**, which contains CTA images and corresponding artery segmentation labels.
+The project uses the **ARCADE (Artery and Carotid Artery Dataset)** for developing the artery segmentation and stenosis analysis components.
 
-For the current development and training pipeline:
+The dataset provides CTA images along with corresponding annotations that can be used for identifying artery structures and stenosis-related regions.
 
-- 200 CT scans were processed.
-- 200 corresponding labels were processed.
-- All selected CT images and labels passed the validation checks.
-
-The dataset is handled in NIfTI format using **NiBabel**.
+The dataset is organized into separate tasks for artery segmentation and stenosis analysis.
 
 ---
 
-# Image Preprocessing
+# Data Preprocessing
 
 The preprocessing pipeline includes:
 
-- Loading CT volumes using NiBabel.
-- Checking image and label dimensions.
-- Checking affine information.
-- Clipping CT intensity values to approximately **-1000 to 1500 HU**.
-- Normalizing CT intensity values.
-- Converting artery labels into binary masks.
-- Preparing the data for 3D deep learning.
+- Loading CTA images.
+- Reading the corresponding annotation files.
+- Validating image and annotation information.
+- Converting annotations into suitable segmentation masks.
+- Resizing/preparing images for model input.
+- Normalizing image data.
+- Preparing training and validation data.
 
-The processed volumes are divided into smaller 3D patches for model training.
-
-### Patch Size
-
-```text
-96 × 96 × 96
-```
+The annotation information is processed to generate the required ground-truth masks for training.
 
 ---
 
 # Artery Segmentation
 
-The segmentation model is a custom **3D U-Net** designed for volumetric CTA images.
+The segmentation module is responsible for identifying artery regions from CTA images.
+
+A **U-Net-based deep learning model** is used for artery segmentation.
 
 ### Model Architecture
 
-The network contains:
+The segmentation network contains:
 
-- 3D convolutional layers
+- Convolutional layers
 - Batch normalization
 - ReLU activation
-- Max pooling
-- Transpose convolution
+- Pooling layers
+- Upsampling/transposed convolution
 - Skip connections
-- Two-class output
+- Output segmentation layer
 
-The model predicts the artery region from the input CTA volume.
-
-### Training Configuration
-
-The current training pipeline uses:
-
-- Loss: Dice + Cross Entropy Loss
-- Optimizer: AdamW
-- Learning Rate: `1e-4`
-- Weight Decay: `1e-5`
-- Batch Size: `1`
-- 3D patch size: `96 × 96 × 96`
-- Mixed precision training
-- GPU acceleration using Google Colab
+The model learns to distinguish artery regions from the surrounding CTA image.
 
 ---
 
-# Inference
+# Segmentation Training
 
-For inference, the trained 3D U-Net model is applied to the complete CTA volume using **MONAI sliding-window inference**.
+The model is trained using the ARCADE training data.
 
-### Inference Configuration
+The training pipeline includes:
 
 ```text
-ROI Size: 96 × 96 × 96
-Overlap: 0.5
+CTA Images
+     ↓
+Preprocessing
+     ↓
+Ground-Truth Masks
+     ↓
+U-Net Training
+     ↓
+Validation
+     ↓
+Best Model Checkpoint
 ```
 
-The sliding-window approach allows large 3D CTA volumes to be processed in smaller regions while maintaining the spatial information required for segmentation.
+The trained model is then used to generate predicted artery masks for unseen images.
 
 ---
 
 # Segmentation Evaluation
 
-The segmentation output is evaluated using:
+The segmentation model is evaluated using standard metrics:
 
-- Dice Score
-- Intersection over Union (IoU)
-- Precision
-- Recall
+- **Dice Score**
+- **Intersection over Union (IoU)**
+- **Precision**
+- **Recall**
 
-Different probability thresholds are also tested to study the effect of threshold selection on the predicted artery masks.
-
-### Thresholds Tested
-
-```text
-0.3
-0.5
-0.6
-0.7
-0.8
-```
-
-The results are stored in:
-
-```text
-validation_threshold_results.csv
-```
+These metrics help measure how accurately the model identifies the artery regions compared with the ground-truth annotations.
 
 ---
 
-# Segmentation Visualization
+# Segmentation Results
 
-The project generates visual outputs to compare:
+The current ARCADE-based experiments produced the following results:
 
-- Original CT image
-- Ground-truth artery mask
-- Predicted artery segmentation
-- Ground-truth/prediction overlays
-- Probability maps
+### U-Net
 
-These visualizations help verify whether the model is correctly identifying artery structures.
+- Best validation Dice: **0.7498**
+- Test Dice: **0.7109**
+- Test IoU: **0.5515**
+- Precision: **0.7117**
+- Recall: **0.7101**
+
+### Attention U-Net
+
+- Best validation Dice: **0.7630**
+- Test Dice: **0.7193**
+- Test IoU: **0.5617**
+- Precision: **0.7350**
+- Recall: **0.7043**
+
+The Attention U-Net showed a slight improvement in segmentation performance compared with the basic U-Net.
 
 ---
 
@@ -172,122 +152,165 @@ These visualizations help verify whether the model is correctly identifying arte
 
 ## Overview
 
-After artery segmentation, the predicted artery structures can be analyzed to identify regions where the vessel becomes abnormally narrow.
+After obtaining the artery segmentation, the next stage is to analyze the segmented vessel structure for possible narrowing.
 
-The stenosis module is intended to use the segmented artery region as the input for further analysis.
+Stenosis refers to an abnormal narrowing of a blood vessel.
 
-### Stenosis Analysis Pipeline
+The stenosis module is designed to use the artery segmentation output to identify narrowed regions and estimate their severity.
+
+---
+
+## Stenosis Analysis Pipeline
 
 ```text
 CTA Image
-    ↓
+     ↓
 Preprocessing
-    ↓
-3D Artery Segmentation
-    ↓
+     ↓
+Artery Segmentation
+     ↓
 Extract Artery Region
-    ↓
+     ↓
 Analyze Vessel Geometry
-    ↓
-Identify Narrowing
-    ↓
-Estimate Stenosis Percentage
-    ↓
-Classify Severity
-    ↓
-Generate Stenosis Visualization
+     ↓
+Identify Narrowed Region
+     ↓
+Estimate Diameter
+     ↓
+Calculate Stenosis %
+     ↓
+Severity Classification
+     ↓
+Stenosis Visualization
 ```
 
 ---
 
-## Stenosis Detection
+# Stenosis Detection
 
-The stenosis analysis focuses on identifying abnormal narrowing within the segmented artery.
+The stenosis analysis focuses on identifying regions where the artery diameter becomes smaller than the normal/reference vessel diameter.
 
 The planned analysis includes:
 
 - Extracting the artery region from the segmentation mask.
-- Identifying vessel narrowing along the artery.
-- Comparing the narrowed region with a reference/normal vessel region.
-- Estimating the percentage of narrowing.
+- Identifying the vessel path.
+- Detecting regions with reduced vessel diameter.
+- Estimating the minimum vessel diameter.
+- Comparing the narrowed diameter with a reference diameter.
 - Identifying the approximate location of stenosis.
 
 ---
 
-## Stenosis Percentage
+# Stenosis Percentage
 
-The percentage of stenosis can be estimated using the relationship between the normal/reference vessel diameter and the minimum diameter at the narrowed region.
-
-A commonly used representation is:
+The percentage of narrowing can be estimated using:
 
 ```text
 Stenosis % = (1 - Narrowed Diameter / Reference Diameter) × 100
 ```
 
-The reference diameter represents the estimated normal vessel diameter, while the narrowed diameter represents the vessel diameter at the suspected stenotic region.
+Where:
+
+- **Reference Diameter** = estimated normal vessel diameter.
+- **Narrowed Diameter** = minimum diameter measured at the suspected stenosis region.
+
+The resulting percentage can be used for severity classification.
 
 ---
 
-## Stenosis Severity
+# Stenosis Severity Classification
 
-The system is designed to classify detected narrowing into severity categories such as:
+The system is designed to classify detected narrowing into three categories:
 
 | Stenosis Percentage | Severity |
 |---|---|
-| < 50% | Mild |
-| 50–69% | Moderate |
-| ≥ 70% | Severe |
+| Less than 50% | Mild |
+| 50% – 69% | Moderate |
+| 70% or more | Severe |
 
-These thresholds can be adjusted according to the final clinical/reference methodology adopted for the project.
+These categories are intended for the project's academic analysis and can be adjusted according to the final methodology used.
+
+---
+
+# Stenosis Localization
+
+The system aims to identify the approximate location of the stenotic region within the segmented artery.
+
+The detected region can be highlighted on the CTA image to show where the narrowing occurs.
+
+This allows the output to provide both:
+
+- **Location of narrowing**
+- **Estimated severity**
 
 ---
 
 # Stenosis Visualization
 
-The stenosis module is intended to provide visual indication of suspected narrowing.
+The stenosis visualization module is designed to display:
 
-The visualization can include:
-
-- Original CTA slice
-- Segmented artery
-- Suspected stenotic region
-- Highlighted narrowing area
-- Stenosis percentage
+- Original CTA image
+- Artery segmentation
+- Suspected stenosis region
+- Highlighted narrowed area
+- Estimated stenosis percentage
 - Severity classification
 
-This will make the AI output easier to understand and interpret.
+Example workflow:
+
+```text
+Original CTA
+     +
+Artery Mask
+     ↓
+Identify Narrowed Region
+     ↓
+Highlight Stenosis
+     ↓
+Display Severity and Percentage
+```
 
 ---
 
 # Explainable AI
 
-Explainability is included to make the AI predictions more understandable.
+Explainability is included to make the AI output easier to understand.
 
-The project aims to provide visual evidence showing:
+The visualization can show:
 
 - Where the artery was detected.
-- Which region was identified as abnormal.
-- Where possible stenosis is located.
-- How the predicted region relates to the original CTA image.
+- Which region was identified as narrowed.
+- The approximate stenosis location.
+- The relationship between the original CTA image and the predicted region.
 
-The visual overlays help users understand the model output rather than relying only on numerical predictions.
+This provides visual evidence for the model's predictions instead of presenting only numerical results.
 
 ---
 
-# Development Environment
-
-The current AI/ML experiments are performed using **Google Colab** with GPU acceleration.
-
-### Environment
+# AI Workflow
 
 ```text
-Platform: Google Colab
-GPU: NVIDIA Tesla T4
-Framework: PyTorch
-Medical Image Processing: NiBabel
-Deep Learning Utilities: MONAI
-Numerical Processing: NumPy
-Image Processing: OpenCV
+ARCADE Dataset
+      ↓
+Data Preparation
+      ↓
+Image Preprocessing
+      ↓
+Annotation / Mask Preparation
+      ↓
+U-Net / Attention U-Net
+      ↓
+Artery Segmentation
+      ↓
+Segmentation Evaluation
+      ↓
+Vessel Structure Analysis
+      ↓
+Stenosis Detection
+      ↓
+Severity Classification
+      ↓
+Stenosis Visualization
 ```
 
 ---
@@ -326,79 +349,57 @@ ArteryVision-AI/
 
 ---
 
-# AI Workflow
-
-```text
-ImageCAS CTA Dataset
-        ↓
-Data Validation
-        ↓
-CT Preprocessing
-        ↓
-3D Patch Preparation
-        ↓
-3D U-Net Training
-        ↓
-Sliding-Window Inference
-        ↓
-Artery Segmentation
-        ↓
-Segmentation Evaluation
-        ↓
-Extract Artery Structure
-        ↓
-Stenosis Analysis
-        ↓
-Stenosis Visualization
-```
-
----
-
 # Current AI/ML Progress
 
-### Completed
+## Segmentation
 
-- [x] ImageCAS dataset preparation
-- [x] CT and label validation
-- [x] CT preprocessing
-- [x] Intensity normalization
-- [x] Binary mask preparation
-- [x] 3D patch preparation
-- [x] 3D U-Net implementation
+- [x] ARCADE dataset preparation
+- [x] CTA image preprocessing
+- [x] Annotation processing
+- [x] Segmentation mask generation
+- [x] U-Net implementation
+- [x] Attention U-Net implementation
 - [x] Model training
-- [x] GPU-based training in Google Colab
-- [x] Sliding-window inference
-- [x] Threshold-based evaluation
-- [x] Dice, IoU, Precision and Recall evaluation
+- [x] Validation
+- [x] Segmentation evaluation
+- [x] Dice evaluation
+- [x] IoU evaluation
+- [x] Precision evaluation
+- [x] Recall evaluation
 - [x] Segmentation visualization
 
-### Stenosis Module
+## Stenosis
 
-- [ ] Extract vessel geometry from segmentation
-- [ ] Identify possible narrowing regions
-- [ ] Estimate vessel diameter
+## Stenosis
+
+- [x] ARCADE stenosis annotations identified
+- [x] Stenosis analysis workflow defined
+- [x] Extract vessel geometry
+- [x] Identify narrowed vessel regions
+- [x] Estimate vessel diameter
+- [x] Classify stenosis severity
 - [ ] Calculate stenosis percentage
-- [ ] Classify stenosis severity
-- [ ] Generate stenosis visualization
-- [ ] Integrate stenosis results with the application
+- [ ] Generate final stenosis visualization
+- [ ] Integrate stenosis output with the application
 
 ---
 
 # Future Work
 
-The planned future improvements include:
-
-- Improve segmentation performance using additional training data.
-- Develop vessel centerline extraction.
-- Improve vessel diameter estimation.
-- Implement automated stenosis detection.
-- Generate more detailed stenosis visualizations.
-- Integrate the AI model with the backend API.
-- Perform end-to-end testing with the complete application.
-- Improve explainability of AI predictions.
+- Improve artery segmentation performance.
+- Develop robust vessel geometry extraction.
+- Implement vessel centerline extraction.
+- Estimate vessel diameter at different locations.
+- Automate stenosis localization.
+- Calculate stenosis percentage.
+- Improve severity classification.
+- Generate explainable stenosis visualizations.
+- Integrate the AI module with the backend.
+- Perform end-to-end testing with the complete ArteryVision AI application.
+- Improve overall system reliability and usability.
 
 ---
 
 # Disclaimer
 
-This project is developed for **academic and research purposes**. The AI-generated segmentation and stenosis analysis should not be considered a substitute for professional medical diagnosis or clinical decision-making.
+This project is developed for **academic and research purposes**. The AI-generated segmentation and stenosis analysis are not intended to replace professional medical diagnosis or clinical decision-making.
