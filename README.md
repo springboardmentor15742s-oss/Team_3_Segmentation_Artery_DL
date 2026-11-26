@@ -1,405 +1,259 @@
-# ArteryVision AI
+# ArteryVision — Coronary Imaging Workspace
 
-## Artery Segmentation and Stenosis Detection Using Advanced Deep Learning Techniques
+ArteryVision is a full-stack web application for organizing coronary imaging cases and supporting artery-segmentation and stenosis-detection research workflows. It combines a React + Vite interface with a FastAPI backend and PostgreSQL database.
 
-ArteryVision AI is an AI-based medical image analysis project designed to process **CT Angiography (CTA)** images for artery segmentation and stenosis analysis.
+## GitHub Repository
 
-The project uses deep learning techniques to identify artery regions from CTA images and provides a foundation for detecting and visualizing abnormal vessel narrowing (stenosis).
+- **Repository:** [Team_3_Segmentation_Artery_DL](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL)
+- **My working branch:** [Himanshu](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL/tree/Himanshu)
 
----
+To clone the project directly from the `Himanshu` branch, run:
 
-# Objectives
-
-- Segment arteries from CTA images.
-- Detect and localize possible stenosis regions.
-- Estimate the percentage of vessel narrowing.
-- Classify stenosis severity into mild, moderate, and severe categories.
-- Generate visual outputs for artery and stenosis regions.
-- Evaluate the AI model using standard performance metrics.
-- Integrate the AI module with the complete ArteryVision AI application.
-
----
-
-# AI/ML Module
-
-The AI/ML module uses the **ARCADE dataset** for artery segmentation and stenosis-related analysis.
-
-The overall AI workflow includes:
-
-1. Dataset preparation
-2. Image preprocessing
-3. Artery mask preparation
-4. Deep learning model training
-5. Artery segmentation
-6. Segmentation evaluation
-7. Stenosis analysis
-8. Stenosis visualization
-
----
-
-# Dataset
-
-## ARCADE Dataset
-
-The project uses the **ARCADE (Artery and Carotid Artery Dataset)** for developing the artery segmentation and stenosis analysis components.
-
-The dataset provides CTA images along with corresponding annotations that can be used for identifying artery structures and stenosis-related regions.
-
-The dataset is organized into separate tasks for artery segmentation and stenosis analysis.
-
----
-
-# Data Preprocessing
-
-The preprocessing pipeline includes:
-
-- Loading CTA images.
-- Reading the corresponding annotation files.
-- Validating image and annotation information.
-- Converting annotations into suitable segmentation masks.
-- Resizing/preparing images for model input.
-- Normalizing image data.
-- Preparing training and validation data.
-
-The annotation information is processed to generate the required ground-truth masks for training.
-
----
-
-# Artery Segmentation
-
-The segmentation module is responsible for identifying artery regions from CTA images.
-
-A **U-Net-based deep learning model** is used for artery segmentation.
-
-### Model Architecture
-
-The segmentation network contains:
-
-- Convolutional layers
-- Batch normalization
-- ReLU activation
-- Pooling layers
-- Upsampling/transposed convolution
-- Skip connections
-- Output segmentation layer
-
-The model learns to distinguish artery regions from the surrounding CTA image.
-
----
-
-# Segmentation Training
-
-The model is trained using the ARCADE training data.
-
-The training pipeline includes:
-
-```text
-CTA Images
-     ↓
-Preprocessing
-     ↓
-Ground-Truth Masks
-     ↓
-U-Net Training
-     ↓
-Validation
-     ↓
-Best Model Checkpoint
+```bash
+git clone --branch Himanshu https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL.git
+cd Team_3_Segmentation_Artery_DL
 ```
 
-The trained model is then used to generate predicted artery masks for unseen images.
+> **Scope notice:** This project currently provides workspace, authentication, case/patient management, secure image storage, metadata, reporting, and model-registry functionality. AI/deep-learning inference for artery segmentation and stenosis detection is **not implemented** in this version. The application is for development and research support, not for standalone clinical diagnosis.
 
----
+## Features
 
-# Segmentation Evaluation
+- **Authentication:** User registration and login using password hashing and JWT-based sessions.
+- **Role-based access control (RBAC):** Backend authorization for protected operations.
+- **Case management:** Create, view, update, and manage imaging cases.
+- **Patient records:** Store patient identifiers and associated case metadata.
+- **Medical image workflow:** Upload and retrieve supported image files with file-size and extension checks.
+- **Results and reports:** Store/retrieve analysis-result records and generate report outputs where supported.
+- **Model Registry:** Manage model metadata through the application’s registry workflow.
+- **Dashboard and notifications:** Workspace summaries and notification endpoints.
+- **Activity/audit logs:** Record relevant actions, including administrator role changes.
+- **Settings:** Profile, password, backend connection, security information, and administrator-only Role Management.
+- **Local development:** Run the React frontend and FastAPI backend locally with PostgreSQL.
 
-The segmentation model is evaluated using standard metrics:
+## Role Management
 
-- **Dice Score**
-- **Intersection over Union (IoU)**
-- **Precision**
-- **Recall**
+The supported roles are:
 
-These metrics help measure how accurately the model identifies the artery regions compared with the ground-truth annotations.
-
----
-
-# Segmentation Results
-
-The current ARCADE-based experiments produced the following results:
-
-### U-Net
-
-- Best validation Dice: **0.7498**
-- Test Dice: **0.7109**
-- Test IoU: **0.5515**
-- Precision: **0.7117**
-- Recall: **0.7101**
-
-### Attention U-Net
-
-- Best validation Dice: **0.7630**
-- Test Dice: **0.7193**
-- Test IoU: **0.5617**
-- Precision: **0.7350**
-- Recall: **0.7043**
-
-The Attention U-Net showed a slight improvement in segmentation performance compared with the basic U-Net.
-
----
-
-# Stenosis Detection and Analysis
-
-## Overview
-
-After obtaining the artery segmentation, the next stage is to analyze the segmented vessel structure for possible narrowing.
-
-Stenosis refers to an abnormal narrowing of a blood vessel.
-
-The stenosis module is designed to use the artery segmentation output to identify narrowed regions and estimate their severity.
-
----
-
-## Stenosis Analysis Pipeline
-
-```text
-CTA Image
-     ↓
-Preprocessing
-     ↓
-Artery Segmentation
-     ↓
-Extract Artery Region
-     ↓
-Analyze Vessel Geometry
-     ↓
-Identify Narrowed Region
-     ↓
-Estimate Diameter
-     ↓
-Calculate Stenosis %
-     ↓
-Severity Classification
-     ↓
-Stenosis Visualization
-```
-
----
-
-# Stenosis Detection
-
-The stenosis analysis focuses on identifying regions where the artery diameter becomes smaller than the normal/reference vessel diameter.
-
-The planned analysis includes:
-
-- Extracting the artery region from the segmentation mask.
-- Identifying the vessel path.
-- Detecting regions with reduced vessel diameter.
-- Estimating the minimum vessel diameter.
-- Comparing the narrowed diameter with a reference diameter.
-- Identifying the approximate location of stenosis.
-
----
-
-# Stenosis Percentage
-
-The percentage of narrowing can be estimated using:
-
-```text
-Stenosis % = (1 - Narrowed Diameter / Reference Diameter) × 100
-```
-
-Where:
-
-- **Reference Diameter** = estimated normal vessel diameter.
-- **Narrowed Diameter** = minimum diameter measured at the suspected stenosis region.
-
-The resulting percentage can be used for severity classification.
-
----
-
-# Stenosis Severity Classification
-
-The system is designed to classify detected narrowing into three categories:
-
-| Stenosis Percentage | Severity |
+| Role | Purpose |
 |---|---|
-| Less than 50% | Mild |
-| 50% – 69% | Moderate |
-| 70% or more | Severe |
+| `clinician` | Clinical workflow access permitted by backend policies |
+| `researcher` | Default role for new registrations and research workflow access |
+| `ml_engineer` | Model-registry and ML-related access permitted by backend policies |
+| `administrator` | User and role administration, plus other explicitly authorized operations |
 
-These categories are intended for the project's academic analysis and can be adjusted according to the final methodology used.
+Role-management behavior:
 
----
+- Public registration assigns `researcher`; clients cannot choose an elevated role in the registration request.
+- Administrators can open **Settings → Role Management** to view registered users and update another user’s role.
+- The backend checks administrator permissions for both listing users and updating roles. Hiding the UI alone is not treated as authorization.
+- An administrator cannot change their own role through the role-management endpoint.
+- Role changes revoke the target user’s active sessions so that the user must sign in again.
+- Role changes are recorded in the audit log.
 
-# Stenosis Localization
+For a fresh local database, register a trusted account first. Then, using pgAdmin’s Query Tool or another secure database administrator session, promote that account to the first administrator:
 
-The system aims to identify the approximate location of the stenotic region within the segmented artery.
-
-The detected region can be highlighted on the CTA image to show where the narrowing occurs.
-
-This allows the output to provide both:
-
-- **Location of narrowing**
-- **Estimated severity**
-
----
-
-# Stenosis Visualization
-
-The stenosis visualization module is designed to display:
-
-- Original CTA image
-- Artery segmentation
-- Suspected stenosis region
-- Highlighted narrowed area
-- Estimated stenosis percentage
-- Severity classification
-
-Example workflow:
-
-```text
-Original CTA
-     +
-Artery Mask
-     ↓
-Identify Narrowed Region
-     ↓
-Highlight Stenosis
-     ↓
-Display Severity and Percentage
+```sql
+UPDATE users
+SET role = 'administrator'
+WHERE email = 'your-registered-email@example.com';
 ```
 
----
+Replace the email with your own registered account’s email. Run this only against your own development database and only for a trusted account. Do not expose a public endpoint that lets users bootstrap themselves as administrators.
 
-# Explainable AI
+## Technology Stack
 
-Explainability is included to make the AI output easier to understand.
+**Frontend**
+- React
+- Vite
+- `lucide-react` icons
+- JavaScript and CSS
 
-The visualization can show:
+**Backend**
+- Python
+- FastAPI and Uvicorn
+- SQLAlchemy
+- Pydantic Settings
+- PostgreSQL with Psycopg
+- JWT authentication and password hashing
+- Pytest and HTTPX for tests
 
-- Where the artery was detected.
-- Which region was identified as narrowed.
-- The approximate stenosis location.
-- The relationship between the original CTA image and the predicted region.
-
-This provides visual evidence for the model's predictions instead of presenting only numerical results.
-
----
-
-# AI Workflow
-
-```text
-ARCADE Dataset
-      ↓
-Data Preparation
-      ↓
-Image Preprocessing
-      ↓
-Annotation / Mask Preparation
-      ↓
-U-Net / Attention U-Net
-      ↓
-Artery Segmentation
-      ↓
-Segmentation Evaluation
-      ↓
-Vessel Structure Analysis
-      ↓
-Stenosis Detection
-      ↓
-Severity Classification
-      ↓
-Stenosis Visualization
-```
-
----
-
-# Project Structure
+## Project Structure
 
 ```text
-ArteryVision-AI/
-│
-├── data/
-│   ├── raw/
-│   ├── processed/
-│   └── splits/
-│
-├── notebooks/
-│
+Artery-Vision/
 ├── src/
-│   ├── preprocessing/
-│   ├── models/
-│   ├── training/
-│   ├── evaluation/
-│   ├── stenosis/
-│   └── visualization/
-│
-├── checkpoints/
-│
-├── experiments/
-│
-├── outputs/
-│   ├── segmentation/
-│   ├── reports/
-│   └── visualizations/
-│
-└── documentation/
+│   ├── App.jsx
+│   ├── api.js
+│   ├── main.jsx
+│   ├── styles.css
+│   └── styles_addon.css
+├── backend/
+│   ├── app/
+│   │   ├── routers/
+│   │   │   ├── auth.py
+│   │   │   ├── admin_users.py
+│   │   │   ├── cases.py
+│   │   │   ├── patients.py
+│   │   │   ├── images.py
+│   │   │   ├── results.py
+│   │   │   ├── reports.py
+│   │   │   ├── models.py
+│   │   │   └── audit_logs.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── dependencies.py
+│   │   ├── models.py
+│   │   ├── schemas.py
+│   │   └── main.py
+│   ├── tests/
+│   ├── requirements.txt
+│   └── .env.example
+├── .env.example
+├── package.json
+├── vite.config.js
+└── README.md
 ```
 
----
+## Prerequisites
 
-# Current AI/ML Progress
+Install the following before running the app:
 
-## Segmentation
+- Node.js (20 or newer recommended)
+- Python 3.11 or 3.12 recommended
+- PostgreSQL
+- Git (for version control)
 
-- [x] ARCADE dataset preparation
-- [x] CTA image preprocessing
-- [x] Annotation processing
-- [x] Segmentation mask generation
-- [x] U-Net implementation
-- [x] Attention U-Net implementation
-- [x] Model training
-- [x] Validation
-- [x] Segmentation evaluation
-- [x] Dice evaluation
-- [x] IoU evaluation
-- [x] Precision evaluation
-- [x] Recall evaluation
-- [x] Segmentation visualization
+## Setup and Run Locally
 
-## Stenosis
+### 1. Clone the repository
 
-## Stenosis
+If you have not cloned the project yet, use the branch-specific command above or run:
 
-- [x] ARCADE stenosis annotations identified
-- [x] Stenosis analysis workflow defined
-- [x] Extract vessel geometry
-- [x] Identify narrowed vessel regions
-- [x] Estimate vessel diameter
-- [x] Classify stenosis severity
-- [ ] Calculate stenosis percentage
-- [ ] Generate final stenosis visualization
-- [ ] Integrate stenosis output with the application
+```bash
+git clone --branch Himanshu https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL.git
+cd Team_3_Segmentation_Artery_DL
+```
 
----
+If you are already working in the cloned repository, skip the clone step and switch to your branch with `git switch Himanshu`.
 
-# Future Work
+### 2. Configure PostgreSQL
 
-- Improve artery segmentation performance.
-- Develop robust vessel geometry extraction.
-- Implement vessel centerline extraction.
-- Estimate vessel diameter at different locations.
-- Automate stenosis localization.
-- Calculate stenosis percentage.
-- Improve severity classification.
-- Generate explainable stenosis visualizations.
-- Integrate the AI module with the backend.
-- Perform end-to-end testing with the complete ArteryVision AI application.
-- Improve overall system reliability and usability.
+Create a PostgreSQL database named `arterysegmentation_db`, or choose another database name and update `DATABASE_URL` below accordingly.
 
----
+### 3. Configure the backend
 
-# Disclaimer
+Open a terminal in the project root and run the following commands in PowerShell:
 
-This project is developed for **academic and research purposes**. The AI-generated segmentation and stenosis analysis are not intended to replace professional medical diagnosis or clinical decision-making.
+```powershell
+cd backend
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+Copy-Item .env.example .env
+```
+
+Edit `backend/.env` and set your own PostgreSQL password and secret key:
+
+```env
+DATABASE_URL=postgresql+psycopg://postgres:YOUR_POSTGRES_PASSWORD@localhost:5432/arterysegmentation_db
+SECRET_KEY=REPLACE_WITH_A_RANDOM_SECRET
+ACCESS_TOKEN_EXPIRE_MINUTES=60
+UPLOAD_DIR=uploads
+REPORT_DIR=reports
+MAX_UPLOAD_SIZE_MB=100
+CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
+```
+
+Generate a secret key with Python:
+
+```powershell
+python -c "import secrets; print(secrets.token_hex(32))"
+```
+
+Paste the generated value after `SECRET_KEY=`. Keep `.env` private and never commit it to GitHub. If your PostgreSQL password contains URL-special characters (such as `@`, `:`, `/`, or `#`), URL-encode them in `DATABASE_URL`.
+
+Start the backend **from the `backend` directory**:
+
+```powershell
+uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
+```
+
+Useful URLs:
+
+- Health check: `http://127.0.0.1:8000/health`
+- Interactive API documentation: `http://127.0.0.1:8000/docs`
+
+### 4. Configure and run the frontend
+
+Open a **second terminal** at the project root (the directory containing `package.json`):
+
+```powershell
+Copy-Item .env.example .env.local
+npm ci
+npm run dev
+```
+
+Ensure the root `.env.local` contains the backend base URL:
+
+```env
+VITE_API_BASE_URL=http://127.0.0.1:8000
+```
+
+Open the URL printed by Vite, usually `http://localhost:5173`. Restart Vite after changing a `VITE_` environment variable.
+
+## Application Links (Local Development)
+
+Use these original local URLs while the services are running on your computer:
+
+- **Frontend:** [http://localhost:5173](http://localhost:5173)
+- **Backend API base URL:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- **Backend health check:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
+- **Interactive backend API documentation:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+These are local development URLs. They are accessible from your computer while the frontend and backend are running; they are not public deployment links.
+
+## API Endpoints
+
+The backend exposes these main endpoints (see `/docs` for request and response schemas):
+
+| Area | Endpoints |
+|---|---|
+| Health | `GET /health` |
+| Authentication | `POST /auth/register`, `POST /auth/login`, `GET /auth/me` |
+| Administrator user management | `GET /admin/users`, `PATCH /admin/users/{user_id}/role` |
+| Cases | `POST /cases`, `GET /cases`, `GET /cases/{case_id}`, `PATCH /cases/{case_id}`, `DELETE /cases/{case_id}` |
+| Case history | `GET /cases/{case_id}/history` |
+| Images | `POST /cases/{case_id}/upload`, `GET /cases/{case_id}/images`, `GET /cases/{case_id}/images/{image_id}/file` |
+| Results | `GET /cases/{case_id}/results` |
+
+Additional routers support patients, dashboard data, notifications, preprocessing, model registry metadata, audit logs, and reports. Their exact routes and schemas are available in FastAPI’s interactive documentation.
+
+Supported upload extensions are `.png`, `.jpg`, `.jpeg`, `.tif`, `.tiff`, `.dcm`, `.nii`, and `.nii.gz`. Extension and size checks do not replace full medical-file validation.
+
+## Run Tests and Build
+
+Backend tests (from the `backend` directory, with the virtual environment activated):
+
+```powershell
+pytest -q
+```
+
+Frontend production build (from the project root):
+
+```powershell
+npm run build
+```
+
+## Security and Limitations
+
+- Never commit `.env`, `.env.local`, database passwords, secret keys, access tokens, or real patient information.
+- Use synthetic or de-identified data for demonstrations. Do not expose real patient scans or identifying health information to unauthorized users.
+- Do not expose the PostgreSQL port to the public internet.
+- Backend authorization must remain the source of truth for role and case access.
+- This version does not include AI/deep-learning inference for segmentation or stenosis detection. The backend health response reports `ai_inference: not_implemented`; model outputs must not be represented as generated by this application.
+- For production deployments, configure HTTPS, secret management, logging, backups, database migrations, and a hardened deployment server. The development `--reload` server is not intended for production.
+
+## Current Contribution
+
+This branch documents and includes the administrator Role Management work: the Settings UI for administrators, supported role choices, backend-protected user-list and role-update endpoints, default researcher assignment during registration, audit logging, session revocation on role changes, and tests covering the role-management flow.
