@@ -1,0 +1,5 @@
+Test,Status,Details
+Valid input acceptance,PASS,Valid input processed successfully
+Invalid image dimensions,PASS,Invalid image dimensions
+NaN input rejection,PASS,NaN or Inf detected in input
+Infinite input rejection,PASS,NaN or Inf detected in input
