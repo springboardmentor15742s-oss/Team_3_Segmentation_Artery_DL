@@ -1,11 +1,13 @@
-
 import uuid
+from pathlib import Path
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.config import settings
 from app.database import get_db
 from app.dependencies import get_current_user
 from app.models import AnalysisResult, User
@@ -190,4 +192,75 @@ def compare_case_results(
                 ]
             ),
         },
+    )
+
+
+@router.get(
+    "/{case_id}/results/{result_id}/stenosis-image",
+)
+def download_stenosis_result_image(
+    case_id: uuid.UUID,
+    result_id: uuid.UUID,
+    db: Annotated[Session, Depends(get_db)],
+    user: Annotated[User, Depends(get_current_user)],
+):
+    """
+    Return the generated stenosis prediction image
+    for an authorized analysis result.
+    """
+
+    get_authorized_case(
+        case_id,
+        user,
+        db,
+    )
+
+    result = db.scalar(
+        select(AnalysisResult).where(
+            AnalysisResult.result_id == result_id,
+            AnalysisResult.case_id == case_id,
+        )
+    )
+
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Analysis result not found.",
+        )
+
+    if not result.stenosis_file:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="No stenosis prediction image is available.",
+        )
+
+    stored_path = Path(result.stenosis_file)
+
+    if stored_path.is_absolute():
+        file_path = stored_path.resolve()
+    else:
+        file_path = (
+            settings.upload_path / stored_path
+        ).resolve()
+
+    upload_root = settings.upload_path.resolve()
+
+    try:
+        file_path.relative_to(upload_root)
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid stored result path.",
+        )
+
+    if not file_path.exists() or not file_path.is_file():
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Stenosis prediction file not found on the server.",
+        )
+
+    return FileResponse(
+        path=file_path,
+        media_type="image/png",
+        filename=file_path.name,
     )

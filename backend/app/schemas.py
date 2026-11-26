@@ -102,6 +102,7 @@ class AnalysisResultOut(BaseModel):
     stenosis_file: str | None
     estimated_narrowing: Decimal | None
     confidence_score: Decimal | None
+    severity: str | None
     created_at: datetime
 
 class HistoryOut(BaseModel):

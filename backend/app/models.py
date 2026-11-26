@@ -100,6 +100,7 @@ class AnalysisResult(Base):
     stenosis_file: Mapped[str | None] = mapped_column(Text, nullable=True)
     estimated_narrowing: Mapped[Decimal | None] = mapped_column(Numeric(5, 2), nullable=True)
     confidence_score: Mapped[Decimal | None] = mapped_column(Numeric(5, 4), nullable=True)
+    severity: Mapped[str | None] = mapped_column(String(20), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
 
     case: Mapped[MedicalCase] = relationship(back_populates="results")
