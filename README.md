@@ -5,14 +5,7 @@ ArteryVision is a full-stack web application for organizing coronary imaging cas
 ## GitHub Repository
 
 - **Repository:** [Team_3_Segmentation_Artery_DL](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL)
-- **My working branch:** [Himanshu](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL/tree/Himanshu)
 
-To clone the project directly from the `Himanshu` branch, run:
-
-```bash
-git clone --branch Himanshu https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL.git
-cd Team_3_Segmentation_Artery_DL
-```
 
 > **Scope notice:** This project currently provides workspace, authentication, case/patient management, secure image storage, metadata, reporting, and model-registry functionality. AI/deep-learning inference for artery segmentation and stenosis detection is **not implemented** in this version. The application is for development and research support, not for standalone clinical diagnosis.
 
