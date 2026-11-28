@@ -27,7 +27,7 @@ The system combines traditional image-processing techniques with a U-Net-based d
 ### Project Repository
 
 - **Repository:** [Team_3_Segmentation_Artery_DL](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL)
-- **Working Branch:** [review]
+- **Review Branch:** [review](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL/tree/review)
 - **Application:** ArteryVision
 - **Domain:** Medical Image Processing and Deep Learning
 ## Live Application
