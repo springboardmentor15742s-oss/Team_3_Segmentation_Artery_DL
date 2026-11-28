@@ -1,86 +1,540 @@
 # ArteryVision — Coronary Imaging Workspace
 
-ArteryVision is a full-stack web application for organizing coronary imaging cases and supporting artery-segmentation and stenosis-detection research workflows. It combines a React + Vite interface with a FastAPI backend and PostgreSQL database.
+ArteryVision is a full-stack web application developed for organizing coronary imaging cases and supporting artery segmentation and stenosis detection research workflows.
+
+The system combines a **React + Vite frontend**, **FastAPI backend**, **PostgreSQL database**, and **deep-learning inference pipeline** for research-oriented medical image analysis. It provides case and patient management, medical image upload, AI-based stenosis inference, result visualization, reporting, model evaluation, explainable AI (XAI), model registry, activity logging, and role-based access control.
+
+> **Research and educational use only:** ArteryVision is a research-support application and is not intended to provide standalone clinical diagnosis or replace professional medical interpretation.
+
+---
 
 ## GitHub Repository
 
 - **Repository:** [Team_3_Segmentation_Artery_DL](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL)
-- - **Working Branch:** [Manideepa](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL/tree/Manideepa)
+- **Working Branch:** [Manideepa](https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL/tree/Manideepa)
 
+## Project Website
 
-> **Scope notice:** This project currently provides workspace, authentication, case/patient management, secure image storage, metadata, reporting, and model-registry functionality. AI/deep-learning inference for artery segmentation and stenosis detection is **not implemented** in this version. The application is for development and research support, not for standalone clinical diagnosis.
+**Live Application:** [https://arteryvision.vercel.app/](https://arteryvision.vercel.app/)
 
-## Features
+---
 
-- **Authentication:** User registration and login using password hashing and JWT-based sessions.
-- **Role-based access control (RBAC):** Backend authorization for protected operations.
-- **Case management:** Create, view, update, and manage imaging cases.
-- **Patient records:** Store patient identifiers and associated case metadata.
-- **Medical image workflow:** Upload and retrieve supported image files with file-size and extension checks.
-- **Results and reports:** Store/retrieve analysis-result records and generate report outputs where supported.
-- **Model Registry:** Manage model metadata through the application’s registry workflow.
-- **Dashboard and notifications:** Workspace summaries and notification endpoints.
-- **Activity/audit logs:** Record relevant actions, including administrator role changes.
-- **Settings:** Profile, password, backend connection, security information, and administrator-only Role Management.
-- **Local development:** Run the React frontend and FastAPI backend locally with PostgreSQL.
+## Project Overview
 
-## Role Management
+ArteryVision provides an integrated workspace for coronary imaging research workflows.
 
-The supported roles are:
+The application supports the complete workflow from case creation and image upload to AI inference, result visualization, evaluation, reporting, and research-oriented interpretation.
+
+### Main Workflow
+
+1. User authentication
+2. Case and patient creation
+3. Coronary image upload
+4. Image validation and preprocessing
+5. AI-based stenosis inference
+6. Stenosis localization and visualization
+7. Analysis result generation
+8. Explainable AI visualization
+9. Model evaluation
+10. Report generation and export
+11. Activity and audit logging
+12. Model registry and research management
+
+---
+
+# Features
+
+## 1. Authentication
+
+- User registration and login
+- Password hashing
+- JWT-based authentication
+- Authenticated application sessions
+- Protected backend endpoints
+- Session handling and revocation
+
+## 2. Role-Based Access Control
+
+The application supports role-based access control for protected operations.
+
+Supported roles include:
 
 | Role | Purpose |
 |---|---|
-| `clinician` | Clinical workflow access permitted by backend policies |
-| `researcher` | Default role for new registrations and research workflow access |
-| `ml_engineer` | Model-registry and ML-related access permitted by backend policies |
-| `administrator` | User and role administration, plus other explicitly authorized operations |
+| `clinician` | Clinical-workflow-oriented access according to backend policies |
+| `researcher` | Default research workflow access |
+| `ml_engineer` | Model and machine-learning related access |
+| `administrator` | User, role, audit, and administrative operations |
 
-Role-management behavior:
+Administrative role management is protected at the backend level rather than relying only on frontend visibility.
 
-- Public registration assigns `researcher`; clients cannot choose an elevated role in the registration request.
-- Administrators can open **Settings → Role Management** to view registered users and update another user’s role.
-- The backend checks administrator permissions for both listing users and updating roles. Hiding the UI alone is not treated as authorization.
-- An administrator cannot change their own role through the role-management endpoint.
-- Role changes revoke the target user’s active sessions so that the user must sign in again.
-- Role changes are recorded in the audit log.
+Role changes can revoke active sessions and are recorded through the activity/audit workflow.
 
-For a fresh local database, register a trusted account first. Then, using pgAdmin’s Query Tool or another secure database administrator session, promote that account to the first administrator:
+---
 
-```sql
-UPDATE users
-SET role = 'administrator'
-WHERE email = 'your-registered-email@example.com';
-```
+## 3. Dashboard
 
-Replace the email with your own registered account’s email. Run this only against your own development database and only for a trusted account. Do not expose a public endpoint that lets users bootstrap themselves as administrators.
+The dashboard provides an overview of the research workspace, including:
 
-## Technology Stack
+- Total cases
+- Uploaded image records
+- Stored analysis results
+- Case status information
+- Workspace notifications
+- Quick access to important application functions
 
-**Frontend**
-- React
-- Vite
-- `lucide-react` icons
-- JavaScript and CSS
+---
 
-**Backend**
-- Python
-- FastAPI and Uvicorn
-- SQLAlchemy
-- Pydantic Settings
-- PostgreSQL with Psycopg
-- JWT authentication and password hashing
-- Pytest and HTTPX for tests
+## 4. Case Management
 
-## Project Structure
+Users can:
+
+- Create imaging cases
+- View existing cases
+- Update case information
+- Track case status
+- View case history
+- Upload associated medical images
+- Access analysis results
+- Generate reports and exports
+
+---
+
+## 5. Patient Management
+
+The application provides patient-related case metadata management for the research workflow.
+
+Patient information is associated with cases and protected through the application's authentication and authorization mechanisms.
+
+For demonstrations and testing, synthetic or de-identified data should be used.
+
+---
+
+## 6. Medical Image Workflow
+
+The application supports medical image upload and retrieval with validation controls.
+
+Supported image extensions include:
+
+- `.png`
+- `.jpg`
+- `.jpeg`
+- `.tif`
+- `.tiff`
+- `.dcm`
+- `.nii`
+- `.nii.gz`
+
+The upload workflow includes file extension and file-size checks.
+
+> File extension and size validation do not replace complete clinical or medical-file validation.
+
+---
+
+# AI and Deep Learning
+
+## 7. Artery Segmentation
+
+The project uses deep-learning-based artery segmentation research workflows based on the **ARCADE dataset**.
+
+The segmentation experiments include U-Net-based approaches and model evaluation using standard segmentation metrics.
+
+### Syntax Segmentation Evaluation
+
+Final syntax segmentation evaluation results include:
+
+| Metric | Result |
+|---|---:|
+| Dice Score | 0.7132 |
+| IoU | 0.5689 |
+| Sensitivity | 0.7448 |
+| Specificity | 0.9882 |
+| Hausdorff Distance | 57.3 px |
+
+An Attention U-Net comparison achieved:
+
+| Metric | Result |
+|---|---:|
+| Dice Score | 0.7094 |
+| IoU | 0.5630 |
+
+The baseline U-Net comparison achieved:
+
+| Metric | Result |
+|---|---:|
+| Dice Score | 0.7011 |
+| IoU | 0.5530 |
+
+These values represent research evaluation results and should not be interpreted as clinical performance.
+
+---
+
+# Stenosis Detection
+
+## 8. Stenosis Inference
+
+The project integrates a trained **U-Net-based stenosis model** into the backend inference pipeline.
+
+The backend performs research-oriented stenosis inference and provides analysis outputs to the frontend.
+
+The inference workflow includes:
+
+1. Image input
+2. Image preprocessing
+3. Model inference
+4. Stenosis mask generation
+5. Stenosis localization visualization
+6. Coverage-based estimation
+7. Confidence/result generation
+8. Severity classification
+9. Storage and display of analysis results
+
+The trained model is integrated through the backend inference module:
 
 ```text
-Artery-Vision/
+backend/app/stenosis_inference.py
+```
+
+The trained model is stored under:
+
+```text
+backend/models/stenosis_unet_best.pth
+```
+
+---
+
+## 9. Stenosis Evaluation
+
+Research evaluation of the stenosis model produced the following results:
+
+| Metric | Result |
+|---|---:|
+| Dice Score | 0.3895 |
+| IoU | 0.2626 |
+| Sensitivity | 0.5617 |
+| Specificity | 0.9889 |
+| Hausdorff Distance | 76.2 px |
+
+An earlier Attention-based stenosis experiment achieved a Dice score of approximately **0.3368**.
+
+These results are experimental model-evaluation metrics and should not be interpreted as clinically validated stenosis measurements.
+
+---
+
+# Severity Analysis
+
+## 10. Severity Distribution
+
+The research evaluation includes a severity distribution based on the project's implemented heuristic classification.
+
+| Severity | Number of Samples |
+|---|---:|
+| Mild | 38 |
+| Moderate | 203 |
+| Severe | 59 |
+
+Total evaluated samples:
+
+**300**
+
+The application uses the following research heuristic for estimated narrowing coverage:
+
+- **Mild:** coverage below 1%
+- **Moderate:** coverage from 1% to 3%
+- **Severe:** coverage above 3%
+
+> These thresholds are research heuristics based on segmentation coverage and are **not clinical stenosis grading criteria**.
+
+---
+
+# Explainable AI
+
+## 11. Explainable AI (XAI)
+
+ArteryVision includes an Explainable AI research visualization component.
+
+XAI visualizations are generated from the stenosis research evaluation and are used to provide visual interpretation of model outputs.
+
+The project contains XAI visualization outputs corresponding to the evaluated samples.
+
+The XAI interface allows users to inspect research-oriented visual explanations alongside model predictions.
+
+> XAI visualizations are intended to support model interpretation and research analysis. They do not constitute clinical explanations or diagnostic evidence.
+
+---
+
+# Results and Reports
+
+## 12. Analysis Results
+
+The Results & Reports section provides access to stored analysis outputs associated with imaging cases.
+
+Results may include:
+
+- Model version
+- Stenosis visualization
+- Estimated narrowing
+- Confidence score
+- Severity category
+- Research notes
+- Case information
+- Analysis metadata
+
+The application also provides result comparison and visualization functionality.
+
+---
+
+## 13. Reports and Export
+
+Research outputs can be exported through supported formats.
+
+The reporting workflow supports:
+
+- PDF reports
+- JSON data
+- CSV data
+- Analysis result records
+- Case-related research outputs
+
+Generated reports are intended for research documentation and evaluation.
+
+---
+
+# Model Management
+
+## 14. Model Registry
+
+The Model Registry provides a structured area for managing model metadata within the research application.
+
+Model-related information can include:
+
+- Model name
+- Model version
+- Model type
+- Dataset information
+- Evaluation information
+- Research metadata
+- Model status
+
+The registry is intended to support organized tracking of machine-learning models used within the project.
+
+---
+
+# Model Evaluation
+
+## 15. Evaluation Dashboard
+
+The Model Evaluation section provides research metrics for evaluating the segmentation and stenosis models.
+
+The evaluation workflow includes:
+
+- Dice Score
+- IoU
+- Sensitivity
+- Specificity
+- Hausdorff Distance
+- Model comparison
+- Stenosis evaluation
+- Severity distribution
+
+The evaluation results are displayed within the application to support research analysis and comparison.
+
+---
+
+# Security
+
+## 16. Security and Access Control
+
+Security was considered throughout the application development process.
+
+Implemented security-related controls include:
+
+- Password hashing
+- JWT-based authentication
+- Protected API endpoints
+- Backend authorization
+- Role-based access control
+- Administrator-only role management
+- Session revocation following role changes
+- Audit/activity logging
+- File extension validation
+- File-size validation
+- Environment-variable based secret configuration
+- CORS configuration
+- Protection of sensitive configuration files through `.gitignore`
+
+### Security Practices
+
+The following information must never be committed to the repository:
+
+```text
+.env
+.env.local
+database passwords
+secret keys
+access tokens
+real patient information
+```
+
+For demonstrations and testing, synthetic or de-identified medical data should be used.
+
+The PostgreSQL database should not be exposed directly to the public internet.
+
+---
+
+# Testing
+
+## 17. Backend Testing
+
+Backend functionality was tested using the project's automated test suite.
+
+The test suite covers areas including:
+
+- Report generation
+- Report builder behavior
+- Formula/input sanitization
+- Administrative role management
+- Session revocation
+- Backend workflow behavior
+
+The backend test command is:
+
+```bash
+pytest -q
+```
+
+The project testing workflow successfully passed the implemented automated tests during development.
+
+---
+
+## 18. Frontend Testing and Build Verification
+
+The frontend production build was verified using:
+
+```bash
+npm run build
+```
+
+The Vite production build completed successfully.
+
+The application was also tested through the integrated frontend-backend workflow.
+
+---
+
+## 19. API Testing
+
+The FastAPI backend provides interactive API documentation through:
+
+```text
+/docs
+```
+
+Important API areas include:
+
+- Authentication
+- User management
+- Cases
+- Patients
+- Images
+- Results
+- Reports
+- Model registry
+- Audit logs
+- Dashboard data
+
+The API was tested as part of the application integration workflow.
+
+---
+
+# API Endpoints
+
+## 20. Main API Areas
+
+| Area | Example Endpoints |
+|---|---|
+| Health | `GET /health` |
+| Authentication | `POST /auth/register`, `POST /auth/login`, `GET /auth/me` |
+| Users | `GET /admin/users`, `PATCH /admin/users/{user_id}/role` |
+| Cases | `POST /cases`, `GET /cases`, `GET /cases/{case_id}` |
+| Case History | `GET /cases/{case_id}/history` |
+| Images | `POST /cases/{case_id}/upload` |
+| Results | `GET /cases/{case_id}/results` |
+| Reports | Report-generation endpoints |
+| Model Registry | Model metadata endpoints |
+| Audit Logs | Activity/audit endpoints |
+
+The complete API schema can be accessed through FastAPI's interactive documentation.
+
+---
+
+# Technology Stack
+
+## 21. Frontend
+
+- React
+- Vite
+- JavaScript
+- CSS
+- Lucide React icons
+
+## Backend
+
+- Python
+- FastAPI
+- Uvicorn
+- SQLAlchemy
+- Pydantic
+- PostgreSQL
+- Psycopg
+- JWT authentication
+- Password hashing
+- Pytest
+- HTTPX
+
+## AI / Machine Learning
+
+- Python
+- PyTorch
+- U-Net
+- Attention-based segmentation experiments
+- ARCADE dataset
+- Image preprocessing
+- Segmentation evaluation
+- Stenosis inference
+- Explainable AI visualization
+
+## Deployment / Infrastructure
+
+- Vercel
+- Docker configuration
+- Docker Compose
+- Nginx configuration
+- PostgreSQL
+- Environment-based configuration
+
+---
+
+# Project Structure
+
+The main project structure is organized as follows:
+
+```text
+Team_3_Segmentation_Artery_DL/
+│
 ├── src/
 │   ├── App.jsx
 │   ├── api.js
 │   ├── main.jsx
 │   ├── styles.css
 │   └── styles_addon.css
+│
+├── public/
+│   └── xai/
+│       ├── 1_xai.png
+│       ├── 2_xai.png
+│       ├── ...
+│       └── 300_xai.png
+│
 ├── backend/
 │   ├── app/
 │   │   ├── routers/
@@ -93,50 +547,83 @@ Artery-Vision/
 │   │   │   ├── reports.py
 │   │   │   ├── models.py
 │   │   │   └── audit_logs.py
+│   │   │
 │   │   ├── config.py
 │   │   ├── database.py
 │   │   ├── dependencies.py
+│   │   ├── images.py
 │   │   ├── models.py
 │   │   ├── schemas.py
+│   │   ├── stenosis_inference.py
 │   │   └── main.py
+│   │
+│   ├── models/
+│   │   └── stenosis_unet_best.pth
+│   │
 │   ├── tests/
 │   ├── requirements.txt
+│   ├── Dockerfile
 │   └── .env.example
-├── .env.example
+│
+├── Dockerfile
+├── docker-compose.yml
+├── nginx.conf
+├── .dockerignore
+├── .gitignore
 ├── package.json
 ├── vite.config.js
 └── README.md
 ```
 
-## Prerequisites
+---
 
-Install the following before running the app:
+# Prerequisites
 
-- Node.js (20 or newer recommended)
-- Python 3.11 or 3.12 recommended
+## 22. Required Software
+
+For local development, install:
+
+- Node.js 20 or newer
+- Python 3.11 or newer
 - PostgreSQL
-- Git (for version control)
+- Git
 
-## Setup and Run Locally
+---
 
-### 1. Clone the repository
+# Local Setup
 
-If you have not cloned the project yet, use the branch-specific command above or run:
+## 23. Clone the Repository
+
+To clone the Manideepa branch:
 
 ```bash
-git clone --branch Himanshu https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL.git
+git clone --branch Manideepa https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL.git
 cd Team_3_Segmentation_Artery_DL
 ```
 
-If you are already working in the cloned repository, skip the clone step and switch to your branch with `git switch Himanshu`.
+If the repository is already cloned:
 
-### 2. Configure PostgreSQL
+```bash
+git switch Manideepa
+```
 
-Create a PostgreSQL database named `arterysegmentation_db`, or choose another database name and update `DATABASE_URL` below accordingly.
+---
 
-### 3. Configure the backend
+## 24. Configure PostgreSQL
 
-Open a terminal in the project root and run the following commands in PowerShell:
+Create a PostgreSQL database named:
+
+```text
+arterysegmentation_db
+```
+
+The database connection should be configured through the backend environment file.
+
+---
+
+## 25. Configure the Backend
+
+Open PowerShell in the project root:
 
 ```powershell
 cd backend
@@ -144,12 +631,23 @@ py -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 pip install -r requirements.txt
+```
+
+Create the backend environment file:
+
+```powershell
 Copy-Item .env.example .env
 ```
 
-Edit `backend/.env` and set your own PostgreSQL password and secret key:
+Configure the required environment variables in:
 
-```env
+```text
+backend/.env
+```
+
+Example:
+
+```text
 DATABASE_URL=postgresql+psycopg://postgres:YOUR_POSTGRES_PASSWORD@localhost:5432/arterysegmentation_db
 SECRET_KEY=REPLACE_WITH_A_RANDOM_SECRET
 ACCESS_TOKEN_EXPIRE_MINUTES=60
@@ -159,95 +657,319 @@ MAX_UPLOAD_SIZE_MB=100
 CORS_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
 ```
 
-Generate a secret key with Python:
+Generate a secure secret key using:
 
 ```powershell
 python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
-Paste the generated value after `SECRET_KEY=`. Keep `.env` private and never commit it to GitHub. If your PostgreSQL password contains URL-special characters (such as `@`, `:`, `/`, or `#`), URL-encode them in `DATABASE_URL`.
+Do not commit the `.env` file.
 
-Start the backend **from the `backend` directory**:
+---
+
+## 26. Start the Backend
+
+From the `backend` directory:
 
 ```powershell
 uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
 ```
 
-Useful URLs:
+Backend health endpoint:
 
-- Health check: `http://127.0.0.1:8000/health`
-- Interactive API documentation: `http://127.0.0.1:8000/docs`
+```text
+http://127.0.0.1:8000/health
+```
 
-### 4. Configure and run the frontend
+FastAPI documentation:
 
-Open a **second terminal** at the project root (the directory containing `package.json`):
+```text
+http://127.0.0.1:8000/docs
+```
+
+---
+
+## 27. Configure the Frontend
+
+Open a second terminal in the project root.
+
+Install dependencies:
+
+```powershell
+npm ci
+```
+
+Create the frontend environment file:
 
 ```powershell
 Copy-Item .env.example .env.local
-npm ci
-npm run dev
 ```
 
-Ensure the root `.env.local` contains the backend base URL:
+Set:
 
-```env
+```text
 VITE_API_BASE_URL=http://127.0.0.1:8000
 ```
 
-Open the URL printed by Vite, usually `http://localhost:5173`. Restart Vite after changing a `VITE_` environment variable.
-
-## Application Links (Local Development)
-
-Use these original local URLs while the services are running on your computer:
-
-- **Frontend:** [http://localhost:5173](http://localhost:5173)
-- **Backend API base URL:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
-- **Backend health check:** [http://127.0.0.1:8000/health](http://127.0.0.1:8000/health)
-- **Interactive backend API documentation:** [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-
-These are local development URLs. They are accessible from your computer while the frontend and backend are running; they are not public deployment links.
-
-## API Endpoints
-
-The backend exposes these main endpoints (see `/docs` for request and response schemas):
-
-| Area | Endpoints |
-|---|---|
-| Health | `GET /health` |
-| Authentication | `POST /auth/register`, `POST /auth/login`, `GET /auth/me` |
-| Administrator user management | `GET /admin/users`, `PATCH /admin/users/{user_id}/role` |
-| Cases | `POST /cases`, `GET /cases`, `GET /cases/{case_id}`, `PATCH /cases/{case_id}`, `DELETE /cases/{case_id}` |
-| Case history | `GET /cases/{case_id}/history` |
-| Images | `POST /cases/{case_id}/upload`, `GET /cases/{case_id}/images`, `GET /cases/{case_id}/images/{image_id}/file` |
-| Results | `GET /cases/{case_id}/results` |
-
-Additional routers support patients, dashboard data, notifications, preprocessing, model registry metadata, audit logs, and reports. Their exact routes and schemas are available in FastAPI’s interactive documentation.
-
-Supported upload extensions are `.png`, `.jpg`, `.jpeg`, `.tif`, `.tiff`, `.dcm`, `.nii`, and `.nii.gz`. Extension and size checks do not replace full medical-file validation.
-
-## Run Tests and Build
-
-Backend tests (from the `backend` directory, with the virtual environment activated):
+Start the frontend:
 
 ```powershell
-pytest -q
+npm run dev
 ```
 
-Frontend production build (from the project root):
+The application will normally be available at:
 
-```powershell
-npm run build
+```text
+http://localhost:5173
 ```
 
-## Security and Limitations
+---
 
-- Never commit `.env`, `.env.local`, database passwords, secret keys, access tokens, or real patient information.
-- Use synthetic or de-identified data for demonstrations. Do not expose real patient scans or identifying health information to unauthorized users.
-- Do not expose the PostgreSQL port to the public internet.
-- Backend authorization must remain the source of truth for role and case access.
-- This version does not include AI/deep-learning inference for segmentation or stenosis detection. The backend health response reports `ai_inference: not_implemented`; model outputs must not be represented as generated by this application.
-- For production deployments, configure HTTPS, secret management, logging, backups, database migrations, and a hardened deployment server. The development `--reload` server is not intended for production.
+# Docker
 
-## Current Contribution
+## 28. Docker Configuration
 
-This branch documents and includes the administrator Role Management work: the Settings UI for administrators, supported role choices, backend-protected user-list and role-update endpoints, default researcher assignment during registration, audit logging, session revocation on role changes, and tests covering the role-management flow.
+The project contains Docker-related configuration for containerized deployment and development.
+
+Important files include:
+
+```text
+Dockerfile
+backend/Dockerfile
+docker-compose.yml
+nginx.conf
+.dockerignore
+```
+
+Docker configuration allows the frontend/backend application components to be packaged and deployed using container-based workflows.
+
+---
+
+# Deployment
+
+## 29. Live Application
+
+The deployed ArteryVision frontend is available at:
+
+**https://arteryvision.vercel.app/**
+
+The deployed interface provides access to the research workspace and its implemented frontend functionality.
+
+Production deployments should use secure environment variables and should not expose development secrets or real patient information.
+
+---
+
+# Research Dataset
+
+## 30. ARCADE Dataset
+
+The machine-learning experiments use the **ARCADE dataset** for coronary artery segmentation and stenosis-related research evaluation.
+
+The dataset workflow includes:
+
+- Training data
+- Validation data
+- Test data
+- Artery syntax categories
+- Stenosis annotations
+- Segmentation masks
+- Model evaluation
+
+The dataset is used for research and model development purposes.
+
+---
+
+# Model Evaluation Summary
+
+## 31. Segmentation Results
+
+### Syntax Segmentation
+
+| Model / Configuration | Dice | IoU |
+|---|---:|---:|
+| Baseline U-Net | 0.7011 | 0.5530 |
+| Attention U-Net | 0.7094 | 0.5630 |
+| Final Syntax Configuration | **0.7132** | **0.5689** |
+
+Additional final syntax metrics:
+
+| Metric | Value |
+|---|---:|
+| Sensitivity | 0.7448 |
+| Specificity | 0.9882 |
+| Hausdorff Distance | 57.3 px |
+
+### Stenosis Evaluation
+
+| Metric | Value |
+|---|---:|
+| Dice | 0.3895 |
+| IoU | 0.2626 |
+| Sensitivity | 0.5617 |
+| Specificity | 0.9889 |
+| Hausdorff Distance | 76.2 px |
+
+These values are experimental research metrics and are not clinical validation results.
+
+---
+
+# Limitations
+
+## 32. Research Limitations
+
+The following limitations apply:
+
+- Model performance is based on research datasets and experimental evaluation.
+- Stenosis severity estimation uses a project-specific heuristic.
+- The system has not been clinically validated.
+- Results should not be interpreted as medical diagnosis.
+- Dataset characteristics may affect model generalization.
+- Medical image file validation does not replace complete clinical data validation.
+- XAI visualizations provide research-oriented model interpretation rather than clinical explanations.
+- Production deployment requires additional hardening, monitoring, backups, migration management, and security controls.
+
+---
+
+# Security and Privacy Notice
+
+## 33. Data Protection
+
+This project should be demonstrated using synthetic or de-identified medical data.
+
+Do not upload or commit:
+
+```text
+Real patient scans
+Patient identifiers
+Personal health information
+Passwords
+Database credentials
+JWT secrets
+Environment files
+Access tokens
+```
+
+Environment files should remain local and should be excluded from Git version control.
+
+---
+
+# Team Development
+
+## 34. Branch-Based Development
+
+The project uses Git branches for collaborative development.
+
+The current working branch documented in this README is:
+
+```text
+Manideepa
+```
+
+Branch-specific development allows individual contributions to be developed and tested before integration with the main project branch.
+
+Repository:
+
+```text
+Team_3_Segmentation_Artery_DL
+```
+
+---
+
+# Current Contribution
+
+## 35. Development Contribution
+
+The project includes contributions across:
+
+- AI pipeline and integration
+- ARCADE dataset preparation and evaluation
+- U-Net-based stenosis segmentation
+- Backend inference integration
+- FastAPI API integration
+- React frontend integration
+- Prediction visualization
+- Explainable AI visualization
+- Model evaluation
+- Results and reporting workflow
+- Testing and debugging
+- Security and role-based access control
+- Deployment preparation
+
+The `Manideepa` branch contains the corresponding development work and integration changes associated with the project workflow.
+
+---
+
+# Testing and Verification Summary
+
+## 36. Verification Status
+
+The project was verified through multiple development and testing activities.
+
+### Backend
+
+- Automated backend tests executed successfully.
+- Authentication and protected API workflows tested.
+- Role-based authorization tested.
+- Session revocation behavior tested.
+- Report-generation functionality tested.
+
+### Frontend
+
+- React application build verified.
+- Vite production build completed successfully.
+- Application pages and navigation tested.
+
+### AI Pipeline
+
+- Stenosis inference integrated into the backend.
+- Model output visualizations verified.
+- Stenosis localization tested.
+- Research result records verified.
+
+### Integration
+
+- Frontend and backend communication tested.
+- Image upload workflow tested.
+- Case creation and result workflow tested.
+- Analysis result visualization tested.
+- Report and export functionality tested.
+
+### Security
+
+- Environment files excluded from version control.
+- Backend authorization tested.
+- Role-management restrictions tested.
+- Session revocation tested.
+- File upload validation implemented.
+
+---
+
+# Important Notice
+
+ArteryVision is a **research and educational software project**.
+
+The model outputs, estimated narrowing values, severity categories, segmentation masks, XAI visualizations, and other generated results are intended for research evaluation and demonstration only.
+
+They must **not** be used as a substitute for professional medical diagnosis, clinical decision-making, or interpretation by qualified healthcare professionals.
+
+---
+
+# License
+
+This repository is maintained as part of the project development and research workflow.
+
+Refer to the repository license information for applicable usage and distribution terms.
+
+---
+
+# Project Links
+
+- **Live Application:** https://arteryvision.vercel.app/
+- **GitHub Repository:** https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL
+- **Working Branch:** https://github.com/springboardmentor15742s-oss/Team_3_Segmentation_Artery_DL/tree/Manideepa
+
+---
+
+# ArteryVision
+
+**Coronary Imaging Workspace for Artery Segmentation and Stenosis Detection Research**
